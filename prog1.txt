@@ -1,0 +1,58 @@
+proc print data='C:\SAS foundation\prg1\sales';
+run;
+
+libname my_lib 'C:\SAS foundation\prg1';
+
+proc print data=my_lib.sales;
+run;
+
+proc contents data=my_lib.sales varnum;
+run;
+
+
+proc contents data=my_lib.sales varnum;
+where gender='F';
+run;
+
+proc print data=my_lib.sales(obs=10);
+run;
+
+proc print data=my_lib.sales(obs=10);
+format Salary dollar8.
+run;
+
+proc print data=my_lib.sales(obs=10) label;
+label salary="Employee Salary"
+		Hire_Date="Join Date";
+run;
+
+proc print data=my_lib.sales(obs=10); * obs=10 shows 10 observations from table;
+run;
+
+proc print data=my_lib.sales;
+var Employee_ID First_Name Gender; *var is used to display specific variables (columns);
+run;
+
+proc print data=my_lib.sales;
+var Employee_ID First_Name Gender; 
+where gender='F'; *where is used to specify which observations u want to see, same as sql;
+run;
+
+proc print data=my_lib.sales;
+var Employee_ID First_Name Gender Birth_date; 
+where gender='F';
+format birth_date ddmmyy10.; 
+run;
+
+proc print data=my_lib.sales(obs=5) noobs label;
+var Employee_ID First_Name Gender Birth_date; 
+where gender='F';
+label birth_date="B_date";
+format birth_date worddate.; 
+run;
+
+proc print data=my_lib.sales(obs=10) noobs label;
+var employee_id salary birth_date;
+label salary="Employee Salary";
+format salary dollar8.;
+run;

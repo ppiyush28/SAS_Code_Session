@@ -1,0 +1,130 @@
+libname mylib '';
+run;
+
+proc print data=mylib.order_fact;
+run;
+
+
+%let month=2;
+%let year=2008;
+
+data orders;
+	keep order_date order_type quantity total_retail_price;
+	set mylib.order_Fact end=final;
+	where year(order_date)=&year and month(order_date)=&month;
+	if order_type=3 then Number+1;
+
+	if final=1 then do;
+		put Number = Number;
+		if Number=0 then do;
+			%let foot=No Internet Orders;
+		end;
+
+		else do;
+			%let foot=Some Internet Orders;
+		end;
+	end;
+run;
+
+proc print data=orders;
+footnote "&foot";
+run;
+
+
+
+
+data orders;
+	keep order_date order_type quantity total_retail_price;
+	set mylib.order_Fact end=final;
+	where year(order_date)=&year and month(order_date)=&month;
+	if order_type=3 then Number+1;
+
+	if final=1 then do;
+		put Number = Number;
+		if Number=0 then do;
+			call symputx('foot' ,'No internet changes');
+		end;
+
+		else do;
+			call symputx('foot' ,'Some internet changes');
+		end;
+	end;
+run;
+
+%let month=1;
+
+data orders;
+	keep order_date order_type quantity total_retail_price;
+	set mylib.order_Fact end=final;
+	where year(order_date)=&year and month(order_date)=&month;
+	if order_type=3 then Number+1;
+
+	if final=1 then
+		call symputx('num' ,Number);
+run;
+
+
+proc print data=orders;
+	title "Order for &month &year";
+	footnote "&num Internet Orders";
+run;
+
+-----------------
+
+proc print data=mylib.order_fact;
+where customer_ID=9;
+var order_date order_Type quantity total_retail_price;
+title1 "Customer Number : 9";
+Title2 "Customer name : Cornelia Krahl";
+run;
+
+%let custID=9;
+proc print data=mylib.order_fact;
+where customer_ID=&custID;
+var order_date order_Type quantity total_retail_price;
+title1 "Customer Number : &custID";
+Title2 "Customer name : Cornelia Krahl";
+run;
+
+%let custID=9;
+proc print data=mylib.order_fact;
+where customer_ID=&custID;
+var order_date order_Type quantity total_retail_price;
+title1 "Customer Number : &custID";
+Title2 "Customer name : Cornelia Krahl";
+run;
+
+data _null_;
+	Set mylib.customer;
+	call symputx('name'|| left(Customer_ID),Customer_Name);
+run;
+
+%put _USER_;
+
+%let cust_ID=4;
+proc print data=mylib.order_fact;
+	where customer_ID=&CustID;
+	var order_date order_Type quantity total_retail_price;
+	title1 "Customer Number : &Cust_ID";
+	title2 "Customer Name : &&name&Cust_ID";
+run;
+
+
+
+---------
+
+%macro readraw(first=2003, last=2007);
+%do year=&first %to &last;
+	data year&year;
+	infile "s:\workshop\orders&year..dat";
+	input order_ID Order_Type Order_date : date9.;
+	run;
+%end;
+%mend readraw;
+
+options mlogc mprint;
+
+%readraw(first=2004, last=2006);
+
+
+

@@ -1,0 +1,162 @@
+libname mylib '';
+run;
+
+proc sql;
+select * from mylib.emp;
+run;
+
+
+proc sql;
+insert into mylib.Emp values(101,"Pinky",20,30000);
+insert into mylib.Emp values(102,"Sangeeta",20,40000);
+insert into mylib.Emp values(103,"",20,20000);
+insert into mylib.Emp values(104,"Prerna",10,25000);
+insert into mylib.Emp values(105,"Abbas",10,25000);
+insert into mylib.Emp values(105,"Sabina",40,25000);
+run;
+
+proc sql;
+update mylib.emp
+set salary=35000
+where empID=102;
+run;
+
+proc sql;
+select * from mylib.emp;
+run;
+
+proc sql;
+delete * from mylib.emp where empID=101;
+run;
+
+proc sql;
+alter table mylib.emp
+modify EName as char(20);
+describe table mylib.emp;
+quit;
+
+proc contents data=mylib.emp;
+run;
+
+
+proc sql;
+alter table mylib.emp
+modify Salary format=dollar7.
+modify sal int;
+quit;
+
+proc contents data=mylib.emp;
+run;
+
+proc print data=mylib.emp;
+run;
+
+proc sql;
+alter table mylib.emp
+drop Sal;
+quit;
+
+proc print data=mylib.specialsals;
+run;
+
+proc sql;
+create table Admindata
+as
+select * from mylib.specialsals
+where dept='ADMIN';
+quit;
+
+proc print data=admindata;
+run; 
+
+proc sql;
+select * from mylib.Emp;
+quit;
+
+Proc SQL;
+Create View ViewEmp
+as selct * from mylib.Emp
+where DeptNo=20;
+Quit;
+
+PROC SQL;
+SELECT * FROM ViewEmp;
+QUIT;
+
+
+proc sql;
+update mylib.emp
+set salary=30000
+where empID=102;
+run;
+
+Proc SQL;
+Create table Train_A1
+(ID int,
+ Name char(12),
+ End_Date date);
+Quit;
+
+Proc SQL;
+INSERT INTO Train_A1
+VALUES(102,'Radhika','10Feb2016'd);
+Quit;
+
+proc print data=Train_A1;
+format End_Date ddmmyy10.;
+run;
+
+
+
+PROC SQL;
+select * from Train_A1;
+QUIT;
+
+Proc SQL number;
+Select * from mylib.sales where Salary >(Select Avg(Salary) from mylib.sales);
+QUIT;
+
+
+Proc SQL;
+Select Min(Salary), Max(Salary), Avg(Salary)
+into :MinSal, :MaxSal, :AvgSal
+from mylib.sales;
+Quit;
+
+%Put _USER_;
+
+Proc SQL number;
+Select * from mylib.sales where Salary >&AvgSal;
+QUIT;
+
+Proc SQL;
+Create Table SalesCopy
+Like mylib.sales;
+quit;
+
+
+
+Proc SQL;
+Create table Train_B1
+(Name char(12),
+ ID int,
+ S_Date date,
+ E_Date date);
+Quit;
+
+Proc SQL;
+*INSERT INTO Train_B1 VALUES('Sabina',101,'10Feb2015'd,'10Feb2016'd);
+*INSERT INTO Train_B1 VALUES('Radhika',102,'10Feb2015'd,'10Feb2016'd);
+*INSERT INTO Train_B1 VALUES('Shraddha',104,'12Feb2015'd,'12Feb2016'd);
+INSERT INTO Train_B1 VALUES('Sangeeta',105,'12March2015'd,'12March2016'd);
+
+Quit;
+
+proc print data=Train_B1;
+run;
+
+proc SQL;
+Select Name from Train_B1
+Union
+Select Name from Train_A1;
+Quit;

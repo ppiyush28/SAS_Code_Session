@@ -1,0 +1,104 @@
+proc print data='C:\SAS foundation\prg1\sales';
+run;
+
+libname jkl 'C:\SAS foundation\prg1';
+
+proc print data=jkl.sales (obs=10) noobs label;
+var Employee_ID Gender Salary Hire_date;
+where Gender='F' and Salary>20000;
+format salary dollar8. Hire_Date ddmmyy10.;
+label Hire_Date="DOH" Employee_ID="EID";
+run;
+
+proc contents data=jkl.sales varnum;
+run;
+
+proc contents data=jkl._ALL_;
+run;	
+
+proc contents data=jkl._ALL_ nods;
+run;
+
+
+proc print data=jkl.sales;
+var employee_ID first_name salary country job_title;
+*where job_title in('Sales Manager' 'Chief Sales Officer');
+*where salary not between 40000 and 200000;
+where first_name like 'T_m';
+run;
+
+Title "My SAS Report";
+Title2 "My Second SAS Title";
+footnote "My first Footnote";
+options pageno=1 date;
+proc print data=jkl.sales;
+var employee_ID first_name salary country job_title;
+*where job_title in('Sales Manager' 'Chief Sales Officer');
+*where salary not between 40000 and 200000;
+where job_title ? 'Rep';
+sum salary;
+run;
+
+proc print data=jkl.sales split="*";
+var employee_ID first_name salary country job_title;
+label First_name="Employee First*Name" salary="Employee Salary"
+run;
+
+proc format;
+value $ctryfmt 'AU' 'au' 'aus' 'Aus' 'AUS'='Australia'
+				'US'='united States';
+run;
+
+footnote;
+proc print data=jkl.sales;
+var employee_ID first_name salary country job_title;
+format country $ctryfmt.;
+run;
+
+proc format;
+value salform low-40000='Tier 1'
+				40001-80000='Tier 2'
+				80001-high='Tier 3'
+				other='invalid Salary';
+run;
+
+proc print data=jkl.sales;
+var employee_ID first_name salary country job_title;
+format salary salform.;
+run;
+
+proc print data=jkl.sales;
+var employee_ID first_name salary Hire_date job_title;
+format salary salform.;
+run;
+
+footnote;
+title;
+proc sort data=jkl.sales out=jkl.Myds;
+by country;
+run;
+
+proc print data=jkl.Myds;
+*by country;
+sum salary;
+run;
+
+proc means data=jkl.sales mean min max range sum;
+
+run;
+
+proc freq data=jkl.sales;
+tables country*gender/crosslist norow nocol;
+run;
+
+proc sort data=jkl.sales out=jkl.Myds;
+by country;
+run;
+
+proc print data=jkl.Myds;
+run;
+
+proc print data=jkl.Myds;
+by country;
+sum salary;
+run;

@@ -1,0 +1,142 @@
+libname mylib '';
+run;
+
+proc sql;
+select * from mylib.sales;
+quit;
+
+proc SQL;
+Select First_Name, country, Gender,salary from mylib.sales;
+quit;
+
+proc SQL number;
+Select First_Name, country, Gender,salary 
+from mylib.sales;
+quit;
+
+proc SQL number;
+Select First_Name, country, Gender,salary 
+from mylib.sales
+where gender='F'
+order by First_Name desc;
+quit;
+
+proc SQL;
+Describe table mylib.sales;
+quit;
+
+
+proc SQL;
+Select gender, country, avg(salary) from mylib.sales
+group by gender, Country
+having avg(salary)>30000;
+run;
+
+proc SQL;
+Select First_Name, Gender, Country, Salary, (Salary*.1) label='Emp Bonus'
+from mylib.Sales;
+;
+run;
+
+proc SQL;
+Select First_Name, Gender, Country, Salary, 
+(Salary*.1) 'Emp Bonus' format=dollar7.
+, Birth_Date format=date9.
+from mylib.Sales;
+;
+run;
+
+
+proc SQL;
+Select Job_Title,count(Employee_ID)
+from mylib.Sales
+group by Job_Title;
+run;
+
+proc sql;
+select * from mylib.sales;
+run;
+
+proc sql feedback;
+select a.* from mylib.sales as a;
+run;
+
+Proc sql;
+Create Table mylib.Dept
+(
+	DeptNo int,
+	DName Char(15),
+	Location char(20)
+);
+run;
+
+proc sql;
+insert into mylib.dept values(10,'Analyst','Malad');
+insert into mylib.dept values(20,'Data Scientist','Goregaon');
+insert into mylib.dept values(30,'Data Manager','Dadar');
+select * from mylib.dept;
+run;
+
+Proc sql;
+Create Table mylib.Emp
+(
+	EmpID int,
+	EName Char(20),
+	DeptNo int,
+	Salary int
+);
+run;
+proc sql;
+Select * from mylib.emp;
+run;
+
+proc sql;
+insert into mylib.Emp values(101,"Pinky",20,30000);
+insert into mylib.Emp values(102,"Sangeeta",20,50000);
+insert into mylib.Emp values(103,"",20,10000);
+insert into mylib.Emp values(104,"Prerna",10,40000);
+insert into mylib.Emp values(105,"Abbas",10,30000);
+run;
+proc sql;
+insert into mylib.Emp values(106,"Abbas",40,20000);
+run;
+proc sql;
+select * from mylib.Dept;
+run;
+
+proc sql;
+Select * from mylib.Emp;
+run;
+
+proc sql;
+select Emp.EmpID, Emp.EName, Dept.DName, Dept.DeptNo
+from mylib.Dept as Dept, mylib.Emp as Emp
+where Dept.DeptNo=Emp.DeptNo;
+run;
+
+proc sql;
+select Emp.EmpID, Emp.EName, Dept.DName, COALESCE(Emp.DeptNo, Dept.DeptNo) as DeptNo
+from mylib.Dept as Dept FULL JOIN mylib.Emp as Emp
+ON Dept.DeptNo=Emp.DeptNo;
+run;
+
+proc sql;
+Select * from mylib.Emp;
+run;
+
+proc sql;
+Select * from mylib.Emp;
+run;
+
+proc sql;
+select Emp.EmpID, Emp.Salary
+from mylib.Emp
+where Emp.Salary > ALL (select Salary from mylib.Emp as Emp where EName="Abbas");
+run;
+
+proc sql;
+Select A.EmpID, A.salary
+From mylib.Emp as A, mylib.Emp as B
+where A.salary > B.Salary and B.Ename="Pinky";
+run;
+ 
