@@ -1,0 +1,115 @@
+/*Proc print data=sashelp.shoes;
+run;
+
+data emps
+infile "sales txt" dim='*'
+input first
+*/
+/*to load file into lib*/
+libname orion "C:\SAS foundation\prg1";
+
+/* orion.file is declared as dataset to be used
+work files can be ritten as work.filename or directly filename*/
+
+
+/* describcation */
+proc contents data=orion.country;
+run;
+
+proc print data=orion.country;
+run;
+
+proc print data=orion.sales;
+run;
+
+proc print data=orion.sales;
+where salary > 40000;
+run;
+
+proc print data=orion.sales;
+var Employee_ID First_Name Last_Name Gender;
+run;
+
+proc print data=orion.sales;
+sum  salary;
+by country gender;
+run;
+
+/*sort*/
+
+proc sort data=orion.sales
+          out=work.sales;
+by gender;
+run;
+
+proc print data=work.sales;
+sum  salary;
+by country gender;
+run;
+
+/*format statment*/
+Proc Print data=orion.sales;
+var first_name last_name gender country hire_date salary;
+format hire_date date9.;
+run;
+
+Proc Print data=orion.sales;
+var first_name last_name gender country hire_date salary;
+format hire_date date7.;
+run;
+
+Proc Print data=orion.sales;
+var first_name last_name gender country hire_date salary;
+format hire_date ddmmyy10.;
+run;
+
+Proc Print data=orion.sales;
+var first_name last_name gender country hire_date salary;
+format hire_date ddmmyy10.
+		salary dollar12.;
+run;
+
+Proc Print data=orion.sales;
+var first_name last_name gender country hire_date salary;
+format hire_date ddmmyy10.
+	/*	salary dollar12.*/
+		salary euro12.;
+run;
+
+
+/* proc format*/
+
+proc format;
+value $ctry 'AU' = 'Australia'
+			'US' = 'United states'
+			other = 'invalid';
+run;
+
+proc print data=orion.sales;
+format country $ctry20.;
+run;
+
+order_
+/* order 1= retail
+2=catalog
+3=internet
+
+orgion.sales
+mgnt want see salary into classifications 
+if emy earn >=30000 then tier1
+30000 > emp > 6000 then tier2
+60000 > emp > 500000 then tier3
+*/
+
+title "salary report";
+footnote "internal"
+proc print data=orion.sales label;
+
+label employee_id = 'emp id'
+	salary ='anual salary';
+run;
+footnote;
+title;
+
+proc print data=wook.sales;
+run;

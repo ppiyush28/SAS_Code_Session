@@ -1,0 +1,106 @@
+/*orion*/ 
+
+data subset;
+set orion.sales;
+if job_title = 'Sales Rep. IV' then bonus =1000;
+else if job_title ='sales manager' then bonus = 15000;
+else if job_title ='Senior Sales Manager' then bonus =25000;
+else bonus = 2500;
+run;
+
+proc print data=subset;
+run;
+
+data subset;
+set orion.sales;
+if job_title = 'Sales Rep. IV' then bonus =1000;
+else if job_title ='sales manager' then bonus = 15000;
+else if job_title ='Senior Sales Manager' then bonus =25000;
+else bonus = 2500;
+job_title = upcase(job_title);
+bonus_month = month (Hire_Date);
+bonus_day=mdy(bonus_month, 15, 2018);
+/*bonus_month = mdy(month(hire_date) 15 ,2018) */
+format bonus_day mmddyy10. bonus_month mmddyy10.;
+run;
+
+/*giving funtion via parameter*/
+
+proc print data=subset;
+run;
+
+/*  */
+
+data empsjp;
+ input first $ gender $ region $;
+ datalines;
+ cho f japan
+ tomi m japan
+;
+
+data empsjp1;
+ input first $ gender $ region $;
+ datalines;
+ cho1 f china
+ tomi2 m china
+;
+
+data allemps;
+set empsjp empsjp1;
+run;
+
+proc print;
+run;
+
+/* merge orion star cust inf. with cust type data , condtion us wala cust
+i/p orgion.cust orion.cust_type
+o/p work.cust */
+
+
+data customers;
+/*set orion.customer orion.customer_type; megre only call  dataset*/
+merge orion.customer orion.customer_type;
+if Country = 'US';
+run;
+
+proc Print data=customers;
+run;
+
+Proc Freq data = orion.nonsales2;
+table gender country/nocum nopercent;
+run;
+
+Proc Freq data = orion.nonsales2;
+table gender*country/nocum nopercent norow nocol;
+run;
+
+Proc Freq data = orion.sales;
+table gender country/nocum nopercent;
+run;
+
+
+Proc Freq data = orion.nonsales2 order=freq;
+table employee_id / nocum nopercent;
+run;
+
+Proc print data = orion.nonsales2;
+/*table gender country/nocum nopercent;*/
+where Gender not in ('F' 'M') or 
+	  Country not in ('US' 'AU') or
+	  Employee_id = 120108 or
+	  Employee_id = .;
+run;
+
+
+proc means data = orion.sales sum;
+var salary;
+class job_title;
+run;
+
+proc univariate data= orion.nonsales2;
+var salary;
+run;
+
+mngt want to see top 5 product by no. of order 
+ip : orion.order_fact
+orion.product_list

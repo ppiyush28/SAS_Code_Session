@@ -1,0 +1,177 @@
+proc sort data=orion.sales
+          out=work.sales;
+by gender;
+run;
+
+proc format;
+value tier 0 - 30000 = 'tier1'
+		   30000< - 60000 = 'tier2'
+		   60000< - 50000 = 'tier3';
+run;
+proc print data=work.sales;
+format tier;
+run;
+
+
+data subset;
+set orion.sales;
+bonus=salary * 0.10;
+run;
+
+proc print data=subset;
+run;
+
+/* to control format like var , we use "keep" for temp  files
+where statment is always good*/
+
+data subset;
+set orion.sales;
+bonus=salary * 0.10;
+*/where bonus > 1000;*/
+where salary  > 30000;
+keep first_name salary bonus;
+/*if salary > 30000;*/
+run;
+
+proc print data=subset;
+run;
+
+/* PDV - program data vector
+under compliation 
+1) it will scan for systax
+2) set pointer "D" for feild which is not given in keep
+3) convert into machine lang
+4)	create PDV
+  
+under excutation
+assign missing value in the describator
+it will fetect one by one obveration  and calucuted bonus and display in decibrator
+*/
+
+
+/* to load excell sheet*/
+libname orionx excel "C:\SAS foundation\prg1\sales.xls";
+
+/*to  clear file*/
+
+/*libname  orionx clear;*/
+
+data subset;
+set orionx.'Australia$'n;
+bonus=salary*0.10;
+keep first_name, salary;
+run;
+
+proc print data=subset;
+run; 
+
+
+data subset;
+set orionx.'Australia$'n;
+bonus=salary*0.10;
+keep first_name, salary;
+run;
+
+proc print data=subset;
+run; 
+
+
+data subset;
+set orionx.'UnitedStates$'n;
+where salary > 4000 AND hire_date < '01Jan2003'd;
+keep first_name salary hire_date;
+run;
+
+proc print data=subset;
+run; 
+
+proc print data=orion.customer_dim;
+/*discount = 0.05;*/
+where (Customer_Gender = F and Customer_Age < 36 and Customer_Group contains 'gold');
+run;
+
+proc print data=orion.customer_dim;
+run;
+
+/*to load csv file*/
+
+data sales;
+infile "C:\SAS foundation\prg1\sales.csv" dlm=',';
+length emp_id 8 first_name $ 10 last_name $ 10 gender $ 1 salary 8 
+job_title $ 18 country $ 10;
+input emp_id first_name last_namn  gender salary job_title  country;
+run;
+
+proc print data=sales;
+run;
+
+/* to make data in format/informat*/
+
+data sales;
+infile "C:\SAS foundation\prg1\sales.csv" dlm=',';
+length emp_id 8 first_name $ 10 last_name $ 10 gender $ 1 salary 8 
+job_title $ 18 country $ 10;
+input emp_id first_name last_name gender salary job_title country birth_date :date. hire_date :mmddyy.;
+format birth_date date9. hire_date mmddyy10.;
+run;
+
+proc print data=sales;
+run;
+
+/*other way to give length*/
+data sales;
+infile "C:\SAS foundation\prg1\sales.csv" dlm=',';
+input emp_id  first_name :$18. last_name :$18.  gender :$1. salary 
+job_title :$18. country :$10. birth_date :date. hire_date :mmddyy.;
+format birth_date date9. hire_date mmddyy10.;
+run;
+
+data phone;
+infile "C:\SAS foundation\prg1\phone2.csv" dlm=",";
+input name :$18.  phone1  phone2;
+run;
+
+proc print data=phone;
+run;
+
+data phone;
+infile "C:\SAS foundation\prg1\phone2.csv" dsd;
+input name :$18.  phone1 :$18. phone2 :$18.;
+run;
+
+proc print data=phone;
+run;
+/*DSD -  Delimter sentavtive data* 
+missover will fetech all obs with missing value as well*/
+
+data phone;
+infile "C:\SAS foundation\prg1\phone.csv" dsd missover;
+input name :$18.  phone1 :$18. phone2 :$18.;
+run;
+
+proc print data=phone;
+run;
+/*
+input file
+prices.dat
+prod_id
+start_date
+end_date
+unit_cost_price $
+unit_prod_Price $
+
+date need to present in output as ddmmyy
+*/
+
+data prices;
+infile "C:\SAS foundation\prg1\prices.dat" dlm="*" missover;
+input prod_id start_date :date. end_date :date. unit_cost_price:dollar. unit_prod_price:dollar.;
+format start_date date9. end_date ddmmyy9. unit_cost_price dollar12.2 unit_prod_price dollar12.2;
+
+run;
+
+proc print data=prices;
+run;
+
+
+
